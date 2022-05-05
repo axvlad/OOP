@@ -1,0 +1,373 @@
+using System;
+
+namespace Pudge
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            /*
+             Pudge - персонаж dota2. Относится к класу люди, профессия - мясник, атрибут - сила, имеет 2 оружия: крюк в одной руке
+            и топор в другой руке.
+
+            Внешний вид:
+            Оружие 1 - металлический окровавленный крюк. Крепится к железной цепи, которая зафиксирована на спине персонажа. Крюк выполнен из
+            металла и покрыт кровью своих жертв.
+            Оружие 2 - мясницкий тесак. Предмет имеет острое лезвие, железное основание и прочную ручку. Покрыт кровью своих жертв.
+            Голова - круглая форма головы с двумя длинными швами по бокам. На всей голове много шрамов. Два разных глаза: один человеческий,
+            второй пришит от неизвестного персонажа, большой лоб и зеленый волосы. Персонаж лысеет. Передний подбородок выступает вперед
+            вместе с зубами: 3 зуба справа и 4 зуба слева.
+            Левая рука - на плече открытая рана размером около 10см, поэтому вся рука покрыта кровью. Накачанное плечо с мышцами.
+            Персонаж имеет 5 пальцев.Кисть защищена железной броней. В руке персонаж держит тесак
+            Правая рука - накачанное плечо с мышцами. Персонаж имеет 5 пальцев.Кисть защищена железной броней. В руке держит металлический
+            крюк.
+            Спина - данная часть имеет много шрамов и порезов. Нижняя часть спины с жировыми складками, которые вылезают из штанов.
+            В спину вставлены железные колца, на которых держиться цепь и часть аммуниции.
+            пояс  -  на поясе расположен белый мясницкий фартух, залитый каплями крови. Часть фартуха закрывает жирный живот персонажа.
+            На животе имеется открытая рана размером больше 10м
+            
+            Скилы:
+            1 скил -  hook, герой выпускает крюк, который притягивает другого персонажа, если pudge притянул врага, врагу наносится урон.
+            Скорость полета - 1450, максимальная дальность применения - 1300, способен достигать максимальное расстояние за 0,9 секунды.
+            2 скил - выпускает токсичное облако, вызванное из-за гноения, постоянно наносит урон и замедляет противников, ранит не только
+            вражеских юнитов, но и самого Pudge.
+            3 скил - Flesh Heap, дает Pudge дополнительное сопротивление магии, а также дополнительную силу, которая увеличивается,
+            когда Pudge убивает вражеского героя, или тот умирает поблизости. (пассивная способность, невозможно применить)
+            Ult -  Dismember, Pudge начинает заживо пожирать вражеского юнита, обездвиживая его и нанося периодический урон.
+
+            Передвижение и анимация:
+            1. Персонаж передвигается на двух ногах. Во время передвижения,из-за большого веса и множества ран, персонаж перекатывается с
+            ноги на ногу и шатается.
+            2. Во время прмиенения 1 скила (hook) персонаж поднимает левую руку вверх, а правой выбрасывает свой металлический крюк в жертву или
+            союзника. Когда крюк достигает цели, он охватывает жертву и несет ее прямо к pudge.
+            3. Во время применения 2 скила (rot), персонаж выпрямляется и поднимает 2 руки, издает зеленое токсичное облако вокруг себя.
+            4. Ult. Персонаж оглушает цель и начинает циклично бить врага 2 руками с оружием 
+            */
+
+            var Pudge = new Hero();
+
+            Console.Write("Напиши ");
+            Color("\"играть\"", ConsoleColor.DarkGreen);
+            Console.Write(" для поиска игры");
+            Console.WriteLine();
+            bool play = true;
+            do
+            {
+                switch (Console.ReadLine()?.ToLower())
+                {
+                    case "играть":
+                        
+                        Console.Clear();
+                        Console.WriteLine("Игра нашлась. Вы играете против бота, режим \"very easy\"");
+                        Console.Write("\nВаш персонаж\n --->[");
+                        Color("\"Pudge\"", ConsoleColor.DarkGreen);
+                        Console.Write("]<---\n");
+                        Console.WriteLine();
+
+                        Console.Write("Персонаж бота\n --->[");
+                        Color("\"Crystal Maiden\"", ConsoleColor.DarkRed);
+                        Console.Write("]<---\n");
+                        Console.WriteLine();
+
+                        //показываем описание скилов пуджа
+                        Pudge.DescriptionOfSkills();
+                        Console.WriteLine("\nНажми Enter если ознакомился со способностями и готов идти в бой");
+                        Console.ReadLine();
+                        Console.Clear();
+                        
+                        Console.WriteLine("\nВражеский герой прячется в системе координат, которая изображена ниже. " +
+                            "\nТвоя задача - угадать местоположение врага и хукнуть его к себе");
+                        Console.WriteLine();
+                        // вызываем координаты противника
+                        Map();
+                        Console.WriteLine("\n\nДля начала выбери способность, которая поможет притянуть персонажа к себе");
+                        Console.WriteLine("Для выбора способности пропиши её номер\n");
+                        //показываем описание скилов пуджа
+                        Pudge.DescriptionOfSkills();
+
+                        Color("\n Введите номер способности ~> ", ConsoleColor.DarkGreen);
+
+                        //пользователь должен выбрать правильный параметр, чтобы пройти дальше
+                        do
+                        {
+                            string hook = Console.ReadLine();
+                            if (hook == "1")
+                            {
+                                Console.Clear();
+                                Pudge.Hook(true);
+                                Console.WriteLine("\nВражеский герой прячется в системе координат, которая изображена ниже. " +
+                            "\nТвоя задача - угадать местоположение врага и хукнуть его к себе");
+                                Map();
+                                Console.Write("\nВвести координаты: ");
+
+                                //Выбор координатов для хука
+                                do
+                                {
+                                    string coordinates = Console.ReadLine();
+                                    if (coordinates == "д3" || coordinates == "3д")  
+                                    {
+                                        Console.Clear();
+                                        Color("\nCrystal Maiden ", ConsoleColor.DarkRed);
+                                        Console.Write("была притянута, но успела приморозить тебя ");
+                                        Console.Write("\nБыстрее ");
+                                        Color("замедли её", ConsoleColor.DarkGreen);
+                                        Console.Write(" пока она не скрылась\n");
+
+                                        //замедление от рот
+                                        Console.WriteLine();
+                                        Pudge.DescriptionOfSkills();
+                                        Color("\n Введите номер способности для замедления ~> ", ConsoleColor.DarkGreen);
+                                        do
+                                        {
+                                            string rot = Console.ReadLine();
+                                            if (rot == "2")
+                                            {
+                                                Pudge.Rot(true);
+                                                Console.WriteLine();
+                                                Console.Write("Введи");
+                                                    Color(" [4] ", ConsoleColor.DarkGreen);
+                                                    Console.Write(",чтобы ультануть");
+                                                Console.WriteLine();
+                                                Console.Write("Ввести ~> ");
+                                                do
+                                                {
+                                                    string ult = Console.ReadLine();
+                                                    if (ult == "4")
+                                                    {
+                                                        Console.Clear();
+                                                        Pudge.Disembler(true);
+                                                        Console.Write("\nНо тут ");
+                                                        Color("Cristal Maiden ", ConsoleColor.DarkRed);
+                                                        Console.Write("просит тебя пощадить её");
+                                                        Console.WriteLine();
+
+                                                        Console.Write("Введи");
+                                                        Color(" [1] ", ConsoleColor.DarkGreen);
+                                                        Console.Write(",чтобы продолжить ультовать или введи");
+                                                        Color(" [2] ", ConsoleColor.DarkGreen);
+                                                        Console.Write(",чтобы отпустить");
+                                                        Console.WriteLine();
+                                                        Console.Write("\nВвести ~> ");
+                                                        do
+                                                        {
+                                                            string phrase = Console.ReadLine();
+                                                            if (phrase == "1")
+                                                            {
+                                                                Console.Clear();
+                                                                Pudge.Phrase(true);
+                                                                Pudge.FleshHeap(true);
+                                                                Color("Победа сил света", ConsoleColor.DarkGreen);
+                                                                play = false;
+                                                            }
+                                                            else
+                                                            {
+                                                                Console.Clear();
+                                                                Pudge.Phrase(false);
+                                                                Console.WriteLine("Ты отпустил Crystal Maiden, но в это время вражеские крипы спушили тебе трон");
+                                                                Color("\nПобеда сил тьми", ConsoleColor.DarkRed);
+                                                                play = false;
+                                                            }
+
+                                                        } while (play);
+                                                    }
+                                                    else
+                                                    {
+                                                        Console.WriteLine("Введи правильный номер способности");
+                                                    }
+                                                } while (play);
+                                            }
+                                            else if (rot == "1")
+                                            {
+                                                Pudge.Hook(false);
+                                            }
+                                            else if (rot == "3")
+                                            {
+                                                Pudge.FleshHeap(false);
+                                            }
+                                            else if (rot == "4") 
+                                            {
+                                                Pudge.Disembler(false);
+                                            }
+                                            else
+                                            {
+                                                Console.WriteLine("Такой способности нет");
+                                            }
+
+                                        } while (play);   
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Мимо, старайся еще");
+                                    }    
+                                } while (play); //проверить
+                        }   
+                         else if (hook == "2")
+                        {
+                            Pudge.Rot(false);
+                                Console.WriteLine("Ввести повторно");
+                       }
+                        else if (hook == "3")
+                       {
+                           Pudge.FleshHeap(false);
+                                Console.WriteLine("Ввести повторно");
+                       }
+                        else if (hook == "4")
+                       {
+                            Pudge.Disembler(false);
+                                Console.WriteLine("Ввести повторно");
+                            }
+                        else
+                            {
+                                Color("\nТы выбрал неправильную способность", ConsoleColor.DarkRed);
+                                Console.WriteLine("\nВвести повторно");
+                            }
+                        }
+                        while (play);
+                                break;
+                }
+            } while (play);
+
+            Console.WriteLine("\nНажми Enter, чтобы закрыть приложение");
+            Console.ReadLine();
+
+        }
+
+
+        public static void Color(string str, ConsoleColor color)
+        {
+            Console.ForegroundColor = color;
+            Console.Write(str);
+            Console.ForegroundColor = default;
+
+        }
+
+        public static void Map()
+        {
+            string[] x = new string[6] { "а ", "б ", "в ", "г ", "д ", "ж " };
+            string[] y = new string[5] { "1", "2", "3", "4", "5" };
+            for (int i = 0; i < x.Length; i++)
+               
+            {
+                Color(x[i], ConsoleColor.DarkRed);  
+            }
+
+            for (int a = 0; a < y.Length; a++)
+            {
+                Color("\n"+y[a], ConsoleColor.DarkRed);
+            }
+        }
+
+        public class Hero : Ihook, Irot, Idismember, Iphrase, Idescriptionofskills, Ifleshheap
+        {
+            public void Rot(bool rot)
+            {
+
+                if (rot == true)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Теперь Pudge выпускает трупное облако и Хрустальная Дева замедляется. Самое время ультануть, чтобы прикончить её");
+                }
+                else
+                {
+                    Console.WriteLine("Прежде чем применять способность Root, вы должны притянуть врага к себе, используя способность Hook");
+                }
+            }
+
+            public void Hook(bool hook)
+            {
+                if (hook == true)
+                {
+                    Console.WriteLine("\nХук активирован, теперь укажи координаты противника");
+                }
+                else
+                {
+                    Console.WriteLine("Хук перезаряжается и не может больше быть использован");
+                }
+            }
+
+            public void Disembler(bool disem)
+            {
+                if (disem == true)
+                {
+                    Console.WriteLine("Pudge начинает пожирать врага и оглушает его.");
+                }
+                else
+                {
+                    Console.WriteLine("Pudge не может дотянуться до цели, поскольку она слишком далеко");
+                }
+            }
+
+            public void FleshHeap(bool flesh)
+            {
+                if (flesh == true)
+                {
+                    Console.WriteLine("*~ Сработала пассивная способность Flesh Heap. Теперь сопротивление магии и сила увеличина ~*");
+                }
+                else
+                {
+                    Console.WriteLine("Это пассивная способность, ее нельзя использовать");
+                }
+            }
+            public void Phrase(bool dialog)
+            {
+                if (dialog == true)
+                {
+                    Console.WriteLine("Свежее мясо! Pudge продолжил ультовать и сделал кил");
+                }
+                else
+                {
+                    Console.WriteLine("Pudge: \"Так много мяса, так мало времени, отойди с дороги.\" ");
+                }
+                
+            }
+
+            public void DescriptionOfSkills()
+            {
+                Console.WriteLine("У тебя есть четыре способности:");
+                Color("[1] Hook", ConsoleColor.DarkGreen);
+                Console.WriteLine("\nГерой выпускает крюк, который притягивает врага и наносит ему урон");
+                Console.WriteLine();
+                Color("[2] Rot", ConsoleColor.DarkGreen);
+                Console.WriteLine("\nГерой выпускает токсичное облако, замедляет противника и наносит урон");
+                Console.WriteLine();
+                Color("[3] Flesh Heap", ConsoleColor.DarkGreen);
+                Console.WriteLine("\nПассивная способность. Дает Pudge дополнительное сопротивление магии, а также дополнительную силу, которая увеличивается,когда Pudge убивает вражеского героя. Нельзя использовать");
+                Console.WriteLine();
+                Color("[4] Dismember", ConsoleColor.DarkGreen);
+                Console.WriteLine("\nГерой заживо пожирает врага, оглушая его и наносит урон");
+                Color("___________________________________________________________________________________________________________________________________________________________________________________", ConsoleColor.DarkGreen);
+            }
+        }
+
+        public interface Ihook
+        {
+            void Hook(bool hook);
+        }
+
+        public interface Irot
+        {
+            void Rot(bool rot);
+        }
+
+        public interface Idismember
+        {
+            void Disembler(bool disem);
+        }
+
+        public interface Iphrase
+        {
+            void Phrase(bool dialog);
+        }
+
+        public interface Idescriptionofskills
+        {
+            void DescriptionOfSkills();
+        }
+
+        public interface Ifleshheap
+        {
+            void FleshHeap(bool flesh);
+        }
+
+    }
+}
